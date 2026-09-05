@@ -19,8 +19,8 @@ env:
   - name: MASSIVE_SECRET_KEY
     value: "api-key"
   - name: ALPACA_SECRET_SCOPE
-    value: "database"
+    value: "alpaca"
   - name: ALPACA_KEY_ID_SECRET_KEY
-    value: "alpaca-key-id"
+    value: "alpaca-key"
   - name: ALPACA_SECRET_KEY_SECRET_KEY
-    value: "alpaca-secret-key"
+    value: "alpaca-secret"

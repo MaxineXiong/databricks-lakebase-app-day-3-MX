@@ -1,12 +1,15 @@
 """
-Massive.com API integration for stock quotes.
+Massive.com API integration for stock and cryptocurrency quotes.
 
 This module provides a thin wrapper around Massive.com's aggregates API
-to retrieve previous day's stock market data. It replaces Alpaca's data API
+to retrieve previous day's market data. It replaces Alpaca's data API
 for quote fetching while maintaining the same interface.
 
-API endpoint: GET /v2/aggs/ticker/{stocksTicker}/prev
-Returns previous day's aggregate (open, high, low, close, volume) for a stock.
+Supports both stocks and cryptocurrencies:
+- Stocks: GET /v2/aggs/ticker/{stocksTicker}/prev
+- Crypto: GET /v2/aggs/ticker/X:{cryptoPair}/prev (e.g., X:BTCUSD)
+
+Returns previous day's aggregate (open, high, low, close, volume).
 """
 
 import base64
@@ -35,21 +38,36 @@ def _get_api_key() -> str:
     return _api_key
 
 
+def _is_crypto_symbol(symbol: str) -> bool:
+    """
+    Determine if a symbol is a cryptocurrency.
+    Crypto symbols typically end with USD (e.g., BTCUSD, ETHUSD, SOLUSD)
+    and are longer than 3 characters.
+    """
+    symbol = symbol.strip().upper()
+    return symbol.endswith('USD') and len(symbol) > 3
+
+
 def get_quote(symbol: str) -> dict:
     """
-    Get previous day's aggregate data for a stock ticker symbol from Massive.com.
+    Get previous day's aggregate data for a stock or cryptocurrency symbol from Massive.com.
+    
+    Supports both stocks (e.g., AAPL, TSLA) and cryptocurrencies (e.g., BTCUSD, ETHUSD).
     
     Args:
-        symbol: Stock ticker symbol, e.g. "AAPL".
+        symbol: Stock ticker symbol or crypto pair, e.g. "AAPL" or "BTCUSD".
     
     Returns:
         A dict with symbol, price (close), as_of (ISO timestamp), volume, change,
-        change_percent, open, high, and low.
+        change_percent, open, high, low, and asset_type.
     """
     symbol = symbol.strip().upper()
+    is_crypto = _is_crypto_symbol(symbol)
     
     # Massive.com API endpoint for previous day aggregates
-    url = f"https://api.massive.com/v2/aggs/ticker/{symbol}/prev"
+    # For crypto symbols, Massive.com uses X: prefix (e.g., X:BTCUSD)
+    ticker_param = f"X:{symbol}" if is_crypto else symbol
+    url = f"https://api.massive.com/v2/aggs/ticker/{ticker_param}/prev"
     
     headers = {
         "Authorization": f"Bearer {_get_api_key()}"
@@ -88,6 +106,7 @@ def get_quote(symbol: str) -> dict:
                 "open": open_price,
                 "high": float(result.get("h", 0)),
                 "low": float(result.get("l", 0)),
+                "asset_type": "crypto" if is_crypto else "stock",
             }
         else:
             raise RuntimeError(f"No results returned for {symbol}")

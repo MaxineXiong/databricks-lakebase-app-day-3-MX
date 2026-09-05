@@ -23,8 +23,8 @@ so alpaca_mcp_server.py only needs to import this module instead.
 import base64
 import os
 
-from alpaca.data.historical import StockHistoricalDataClient
-from alpaca.data.requests import StockLatestQuoteRequest
+from alpaca.data.historical import StockHistoricalDataClient, CryptoHistoricalDataClient
+from alpaca.data.requests import StockLatestQuoteRequest, CryptoLatestQuoteRequest
 from alpaca.trading.client import TradingClient
 from alpaca.trading.enums import OrderSide, QueryOrderStatus, TimeInForce
 from alpaca.trading.requests import GetOrdersRequest, MarketOrderRequest
@@ -32,12 +32,13 @@ from databricks.sdk import WorkspaceClient
 
 _w = WorkspaceClient()
 
-_SECRET_SCOPE = os.environ.get("ALPACA_SECRET_SCOPE", "database")
-_KEY_ID_SECRET_KEY = os.environ.get("ALPACA_KEY_ID_SECRET_KEY", "alpaca-key-id")
-_SECRET_KEY_SECRET_KEY = os.environ.get("ALPACA_SECRET_KEY_SECRET_KEY", "alpaca-secret-key")
+_SECRET_SCOPE = os.environ.get("ALPACA_SECRET_SCOPE", "alpaca")
+_KEY_ID_SECRET_KEY = os.environ.get("ALPACA_KEY_ID_SECRET_KEY", "alpaca-key")
+_SECRET_KEY_SECRET_KEY = os.environ.get("ALPACA_SECRET_KEY_SECRET_KEY", "alpaca-secret")
 
 _trading_client: TradingClient | None = None
 _data_client: StockHistoricalDataClient | None = None
+_crypto_client: CryptoHistoricalDataClient | None = None
 
 
 def _secret(key: str) -> str:
@@ -67,22 +68,61 @@ def _get_data_client() -> StockHistoricalDataClient:
     return _data_client
 
 
-def get_quote(symbol: str) -> dict:
+def _get_crypto_client() -> CryptoHistoricalDataClient:
+    global _crypto_client
+    if _crypto_client is None:
+        _crypto_client = CryptoHistoricalDataClient(
+            _secret(_KEY_ID_SECRET_KEY),
+            _secret(_SECRET_KEY_SECRET_KEY),
+        )
+    return _crypto_client
+
+
+def _is_crypto_symbol(symbol: str) -> bool:
     """
-    Get the latest real quote for a stock ticker symbol from Alpaca's
-    market data API. Returns the bid/ask midpoint as `price`.
+    Determine if a symbol is a cryptocurrency.
+    Crypto symbols typically end with USD (e.g., BTCUSD, ETHUSD, SOLUSD)
+    and are longer than 3 characters.
     """
     symbol = symbol.strip().upper()
-    quotes = _get_data_client().get_stock_latest_quote(
-        StockLatestQuoteRequest(symbol_or_symbols=symbol)
-    )
-    quote = quotes[symbol]
-    price = round((float(quote.bid_price) + float(quote.ask_price)) / 2, 2)
-    return {
-        "symbol": symbol,
-        "price": price,
-        "as_of": quote.timestamp.isoformat(),
-    }
+    return symbol.endswith('USD') and len(symbol) > 3
+
+
+def get_quote(symbol: str) -> dict:
+    """
+    Get the latest real quote for a stock or cryptocurrency symbol from Alpaca's
+    market data API. Returns the bid/ask midpoint as `price`.
+    
+    Supports both stocks (e.g., AAPL, TSLA) and cryptocurrencies (e.g., BTCUSD, ETHUSD).
+    """
+    symbol = symbol.strip().upper()
+    
+    if _is_crypto_symbol(symbol):
+        # Use crypto data client for cryptocurrency symbols
+        quotes = _get_crypto_client().get_crypto_latest_quote(
+            CryptoLatestQuoteRequest(symbol_or_symbols=symbol)
+        )
+        quote = quotes[symbol]
+        price = round((float(quote.bid_price) + float(quote.ask_price)) / 2, 2)
+        return {
+            "symbol": symbol,
+            "price": price,
+            "as_of": quote.timestamp.isoformat(),
+            "asset_type": "crypto",
+        }
+    else:
+        # Use stock data client for regular stock symbols
+        quotes = _get_data_client().get_stock_latest_quote(
+            StockLatestQuoteRequest(symbol_or_symbols=symbol)
+        )
+        quote = quotes[symbol]
+        price = round((float(quote.bid_price) + float(quote.ask_price)) / 2, 2)
+        return {
+            "symbol": symbol,
+            "price": price,
+            "as_of": quote.timestamp.isoformat(),
+            "asset_type": "stock",
+        }
 
 
 def place_order(account_id: str, symbol: str, side: str, quantity: float) -> dict:
@@ -103,9 +143,7 @@ def place_order(account_id: str, symbol: str, side: str, quantity: float) -> dic
 
     # Crypto orders require GTC (Good-Til-Canceled) or IOC (Immediate-Or-Cancel)
     # Stock orders can use DAY
-    # Crypto symbols typically end with USD (e.g., BTCUSD, ETHUSD)
-    is_crypto = symbol.endswith('USD') and len(symbol) > 3
-    time_in_force = TimeInForce.GTC if is_crypto else TimeInForce.DAY
+    time_in_force = TimeInForce.GTC if _is_crypto_symbol(symbol) else TimeInForce.DAY
 
     order_data = MarketOrderRequest(
         symbol=symbol,
