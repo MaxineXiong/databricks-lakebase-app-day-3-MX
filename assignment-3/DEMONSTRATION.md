@@ -9,37 +9,44 @@ This document shows example natural-language queries and how the agent should re
 **User Query:**
 > "What's the weather in Chicago right now?"
 
-**Agent Tool Calls:**
-```
-1. get_current_weather("Chicago")
-```
+**Agent Response:**
 
-**Tool Response:**
-```json
-{
-  "status": "success",
-  "message": "Current weather in Chicago, United States: 79.7°F (feels like 85.0°F), Mainly clear. Humidity: 73%, Wind: 6.9 mph.",
+> I am using this tool to get the current weather conditions in Chicago because it provides real-time data on temperature, humidity, wind speed, and precipitation, which will help answer the user's question about the current weather in Chicago.
+>
+> ```python
+> get_current_weather("Chicago")
+> ```
+>
+> **Output:**
+>
+> ```json
+> {
+>   "status": "success",
+  "message": "Current weather in Chicago, United States: 23.5°C (feels like 27.0°C), Foggy. Humidity: 99%, Wind: 14.5 km/h.",
   "data": {
     "location": {
+      "latitude": 41.85003,
+      "longitude": -87.65005,
       "name": "Chicago",
       "country": "United States",
-      "latitude": 41.85,
-      "longitude": -87.65
+      "admin1": "Illinois"
     },
     "weather": {
-      "temperature": 79.7,
-      "feels_like": 85.0,
-      "humidity": 73,
-      "wind_speed": 6.9,
+      "temperature": 23.5,
+      "feels_like": 27,
+      "humidity": 99,
+      "wind_speed": 14.5,
       "precipitation": 0,
-      "conditions": "Mainly clear"
-    }
+      "conditions": "Foggy",
+      "weather_code": 45,
+      "timestamp": "2026-09-05T16:00"
+    },
+    "timezone": "GMT"
   }
-}
-```
-
-**Expected Agent Response:**
-> "It's currently 79.7°F in Chicago (feels like 85°F) with mainly clear skies. Humidity is at 73% and there's a light breeze at 6.9 mph. It's a warm day with good visibility!"
+> }
+> ```
+>
+> The current weather in Chicago is 23.5°C (feels like 27.0°C) with foggy conditions, 99% humidity, and a wind speed of 14.5 km/h. It's a good idea to dress in layers and be prepared for the fog. If you're planning on being outside, you may want to bring a light jacket or umbrella to be comfortable."
 
 ---
 
@@ -48,315 +55,533 @@ This document shows example natural-language queries and how the agent should re
 **User Query:**
 > "Will it rain in Seattle this weekend?"
 
-**Agent Tool Calls:**
-```
-1. get_forecast("Seattle", days=3)
-```
-
-**Tool Response:**
-```json
-{
-  "status": "success",
-  "message": "3-day forecast for Seattle, United States",
+**Agent Response:**
+>
+> To determine if it will rain in Seattle this weekend, I need to get the forecast for the next few days. This will give me information about precipitation probability and amount, which I can use to advise the user.
+>
+> ```python
+> get_forecast("Seattle", days=5)
+> ```
+>
+> **Output:**
+>
+> ```json
+> {
+>   "status": "success",
+  "message": "5-day forecast for Seattle, United States",
   "data": {
-    "location": {"name": "Seattle", "country": "United States", ...},
+    "location": {
+      "latitude": 47.60621,
+      "longitude": -122.33207,
+      "name": "Seattle",
+      "country": "United States",
+      "admin1": "Washington"
+    },
     "forecast": [
       {
         "date": "2026-09-05",
-        "temp_high": 68,
-        "temp_low": 52,
-        "precipitation_sum": 0.35,
-        "precipitation_probability": 75,
-        "conditions": "Moderate rain"
+        "temp_high": 20.4,
+        "temp_low": 10.8,
+        "precipitation_sum": 0,
+        "precipitation_probability": 23,
+        "wind_speed_max": 10.8,
+        "conditions": "Overcast",
+        "weather_code": 3
       },
       {
         "date": "2026-09-06",
-        "temp_high": 65,
-        "temp_low": 50,
-        "precipitation_sum": 0.15,
-        "precipitation_probability": 45,
-        "conditions": "Light drizzle"
-      }
-    ]
-  }
-}
-```
-
-**Expected Agent Response:**
-> "Yes, it looks like rain is very likely in Seattle this weekend. Saturday shows a 75% chance with about 0.35 inches expected (moderate rain), and Sunday has a 45% chance with lighter drizzle (0.15 inches). Temperatures will be in the mid-60s. Definitely bring an umbrella!"
-
----
-
-## 📋 **Example Query 3: Should I Bring a Jacket?**
-
-**User Query:**
-> "Should I bring a jacket to Austin tomorrow?"
-
-**Agent Tool Calls:**
-```
-1. get_forecast("Austin", days=1)
-```
-
-**Tool Response:**
-```json
-{
-  "status": "success",
-  "message": "1-day forecast for Austin, United States",
-  "data": {
-    "forecast": [
+        "temp_high": 22,
+        "temp_low": 11,
+        "precipitation_sum": 0,
+        "precipitation_probability": 9,
+        "wind_speed_max": 15.2,
+        "conditions": "Overcast",
+        "weather_code": 3
+      },
       {
-        "date": "2026-09-05",
-        "temp_high": 95,
-        "temp_low": 72,
-        "precipitation_sum": 0.0,
+        "date": "2026-09-07",
+        "temp_high": 21.6,
+        "temp_low": 11.2,
+        "precipitation_sum": 0,
         "precipitation_probability": 5,
-        "conditions": "Clear sky"
+        "wind_speed_max": 14.8,
+        "conditions": "Overcast",
+        "weather_code": 3
+      },
+      {
+        "date": "2026-09-08",
+        "temp_high": 22.3,
+        "temp_low": 10.9,
+        "precipitation_sum": 0,
+        "precipitation_probability": 5,
+        "wind_speed_max": 14.4,
+        "conditions": "Overcast",
+        "weather_code": 3
+      },
+      {
+        "date": "2026-09-09",
+        "temp_high": 24.5,
+        "temp_low": 11.4,
+        "precipitation_sum": 0,
+        "precipitation_probability": 0,
+        "wind_speed_max": 13.3,
+        "conditions": "Overcast",
+        "weather_code": 3
       }
-    ]
+    ],
+    "timezone": "GMT"
   }
-}
-```
-
-**Expected Agent Response:**
-> "It's going to be quite warm in Austin tomorrow - highs around 95°F with clear skies. During the day you definitely won't need a jacket, but if you're out late evening when it drops to 72°F, you might want a light layer. Overall, it'll be hot and sunny, so focus on sun protection instead!"
+> }
+> ```
+>
+> Based on the 5-day forecast, it appears that there is a low probability of precipitation in Seattle this weekend, with a 9% chance of rain on Saturday and a 5% chance on Sunday. The conditions are expected to be overcast, but it's unlikely to rain. However, it's always a good idea to check the forecast again closer to the weekend for any updates."
 
 ---
 
-## 📋 **Example Query 4: Umbrella Prediction**
+## 📋 **Example Query 3: Umbrella Prediction**
 
 **User Query:**
-> "Do I need an umbrella in New York tomorrow?"
+> "Do I need an umbrella in Sydney tomorrow?"
 
-**Agent Tool Calls:**
-```
-1. predict_umbrella_needed("New York", "2026-09-05")
-```
-
-**Tool Response:**
-```json
-{
-  "status": "success",
-  "message": "YES, bring an umbrella to New York on 2026-09-05. High precipitation probability (65%). Conditions: Moderate rain.",
+**Agent Response:**
+>
+> The user is asking if they need an umbrella in Sydney tomorrow. To answer this, I need to call the predict_umbrella_needed tool with the location as Sydney and the date as tomorrow.
+>
+> ```python
+> predict_umbrella_needed("Sydney", "2026-09-07")
+> ```
+>
+> **Output:**
+>
+> ```json
+> {
+>   "status": "success",
+  "message": "YES, bring an umbrella to Sydney on 2026-09-07. High precipitation probability (67%). Conditions: Slight rain showers.",
   "data": {
+    "location": {
+      "latitude": -33.86785,
+      "longitude": 151.20732,
+      "name": "Sydney",
+      "country": "Australia",
+      "admin1": "New South Wales"
+    },
+    "date": "2026-09-07",
     "recommendation": "YES",
-    "reason": "High precipitation probability (65%)",
+    "reason": "High precipitation probability (67%)",
     "forecast_details": {
-      "date": "2026-09-05",
-      "precipitation_probability": 65,
-      "precipitation_sum": 0.25,
-      "conditions": "Moderate rain"
+      "date": "2026-09-07",
+      "temp_high": 20.1,
+      "temp_low": 12.1,
+      "precipitation_sum": 8.9,
+      "precipitation_probability": 67,
+      "wind_speed_max": 19.6,
+      "conditions": "Slight rain showers",
+      "weather_code": 80
     },
     "thresholds_used": {
       "precipitation_probability_threshold": "> 40%",
-      "precipitation_amount_threshold": "> 0.1 inches"
+      "precipitation_amount_threshold": "> 2.5 mm"
     }
   }
-}
-```
-
-**Expected Agent Response:**
-> "Yes, I'd definitely recommend bringing an umbrella tomorrow in New York. There's a 65% chance of rain with about 0.25 inches expected. The forecast shows moderate rain, so you'll likely get wet without one!"
+> }
+> ```
+>
+> Yes, you should bring an umbrella to Sydney tomorrow (2026-09-07). There is a high precipitation probability of 67% with slight rain showers expected, so it's likely to be a wet day."
 
 ---
 
-## 📋 **Example Query 5: Multi-Day Forecast**
+## 📋 **Example Query 4: Multi-Day Forecast**
 
 **User Query:**
 > "Give me a 5-day forecast for Miami"
 
-**Agent Tool Calls:**
-```
-1. get_forecast("Miami", days=5)
-```
-
-**Tool Response:**
-```json
-{
-  "status": "success",
-  "message": "5-day forecast for Miami, United States",
+**Agent Response:**
+>
+> I am using the get_forecast tool to provide a 5-day forecast for Melbourne, as it will give me the most up-to-date and accurate weather information for the next 5 days.
+>
+> ```python
+> get_forecast("Melbourne", days=5)
+> ```
+>
+> **Output:**
+>
+> ```json
+> {
+>   "status": "success",
+  "message": "5-day forecast for Melbourne, Australia",
   "data": {
+    "location": {
+      "latitude": -37.814,
+      "longitude": 144.96332,
+      "name": "Melbourne",
+      "country": "Australia",
+      "admin1": "Victoria"
+    },
     "forecast": [
-      {"date": "2026-09-04", "temp_high": 88, "temp_low": 78, "conditions": "Partly cloudy", "precipitation_probability": 30},
-      {"date": "2026-09-05", "temp_high": 89, "temp_low": 79, "conditions": "Thunderstorm", "precipitation_probability": 80},
-      {"date": "2026-09-06", "temp_high": 87, "temp_low": 77, "conditions": "Slight rain", "precipitation_probability": 50},
-      {"date": "2026-09-07", "temp_high": 90, "temp_low": 80, "conditions": "Clear sky", "precipitation_probability": 10},
-      {"date": "2026-09-08", "temp_high": 91, "temp_low": 81, "conditions": "Mainly clear", "precipitation_probability": 15}
-    ]
+      {
+        "date": "2026-09-05",
+        "temp_high": 17.7,
+        "temp_low": 11.5,
+        "precipitation_sum": 2.7,
+        "precipitation_probability": 92,
+        "wind_speed_max": 25.2,
+        "conditions": "Slight rain showers",
+        "weather_code": 80
+      },
+      {
+        "date": "2026-09-06",
+        "temp_high": 16.7,
+        "temp_low": 10.8,
+        "precipitation_sum": 1.7,
+        "precipitation_probability": 35,
+        "wind_speed_max": 14.8,
+        "conditions": "Moderate drizzle",
+        "weather_code": 53
+      },
+      {
+        "date": "2026-09-07",
+        "temp_high": 14.9,
+        "temp_low": 6.9,
+        "precipitation_sum": 0.7,
+        "precipitation_probability": 53,
+        "wind_speed_max": 21.3,
+        "conditions": "Light drizzle",
+        "weather_code": 51
+      },
+      {
+        "date": "2026-09-08",
+        "temp_high": 14.1,
+        "temp_low": 9.4,
+        "precipitation_sum": 0.4,
+        "precipitation_probability": 71,
+        "wind_speed_max": 20.7,
+        "conditions": "Light drizzle",
+        "weather_code": 51
+      },
+      {
+        "date": "2026-09-09",
+        "temp_high": 12.4,
+        "temp_low": 9.3,
+        "precipitation_sum": 0.3,
+        "precipitation_probability": 10,
+        "wind_speed_max": 20.3,
+        "conditions": "Light drizzle",
+        "weather_code": 51
+      }
+    ],
+    "timezone": "GMT"
   }
 }
-```
+> ```
 
-**Expected Agent Response:**
-> "Here's the 5-day forecast for Miami:
-> 
-> - **Friday (9/4):** Highs of 88°F, partly cloudy, 30% rain chance
-> - **Saturday (9/5):** Highs of 89°F, thunderstorms likely (80% chance) - stay indoors if possible
-> - **Sunday (9/6):** Highs of 87°F, slight rain possible (50% chance)
-> - **Monday (9/7):** Highs of 90°F, clear and sunny (10% rain)
-> - **Tuesday (9/8):** Highs of 91°F, mainly clear (15% rain)
-> 
-> It's going to be hot and humid all week with a stormy Saturday. Pack an umbrella for the weekend!"
+> Based on the 5-day forecast for Melbourne, it appears that the weather will be cool and rainy for the next few days. Here's a breakdown of the forecast:
+> * 2026-09-05: Slight rain showers with a high of 17.7°C and a low of 11.5°C
+> * 2026-09-06: Moderate drizzle with a high of 16.7°C and a low of 10.8°C
+> * 2026-09-07: Light drizzle with a high of 14.9°C and a low of 6.9°C
+> * 2026-09-08: Light drizzle with a high of 14.1°C and a low of 9.4°C
+> * 2026-09-09: Light drizzle with a high of 12.4°C and a low of 9.3°C
+
+> It's likely that you will need a jacket or umbrella for the next few days, especially on 2026-09-07, when the temperature is expected to be quite cool. However, the precipitation probability decreases significantly on 2026-09-09, so you may not need an umbrella on that day."
 
 ---
 
-## 📋 **Example Query 6a: Weather Alert (US - Official NWS)**
+## 📋 **Example Query 5a: Weather Alert (US - Official NWS)**
 
 **User Query:**
 > "Are there any weather warnings in Chicago?"
 
-**Agent Tool Calls:**
-```
-1. get_weather_alert("Chicago")
-```
-
-**Tool Response (with active NWS alert):**
-```json
-{
-  "status": "success",
-  "message": "WEATHER ALERT for Chicago, United States: Winter Storm Warning (Severe) - ...WINTER STORM WARNING IN EFFECT FROM 6 AM FRIDAY TO 6 PM CST SATURDAY...",
+**Agent Response:**
+>
+> I am using the get_weather_alert tool to check if there are any weather warnings in Chicago.
+>
+> ```python
+> get_weather_alert("Chicago")
+> ```
+>
+> **Output:**
+>
+> ```json
+> {
+>   "status": "success",
+  "message": "No active weather alerts for Chicago, United States. Conditions are normal.",
   "data": {
     "location": {
+      "latitude": 41.85003,
+      "longitude": -87.65005,
       "name": "Chicago",
       "country": "United States",
-      "latitude": 41.85,
-      "longitude": -87.65
+      "admin1": "Illinois"
     },
-    "alert_status": "alerts_active",
-    "count": 1,
-    "alerts": [
-      {
-        "event": "Winter Storm Warning",
-        "severity": "Severe",
-        "urgency": "Expected",
-        "headline": "...WINTER STORM WARNING IN EFFECT FROM 6 AM FRIDAY TO 6 PM CST SATURDAY...",
-        "description": "Heavy snow expected. Total snow accumulations of 8 to 12 inches with locally higher amounts possible.",
-        "instruction": "If you must travel, keep an extra flashlight, food, and water in your vehicle in case of an emergency.",
-        "onset": "2024-01-19T06:00:00-06:00",
-        "expires": "2024-01-20T18:00:00-06:00"
-      }
-    ],
+    "alert_status": "all_clear",
+    "alerts": [],
+    "count": 0,
     "source": "National Weather Service"
   }
 }
-```
+> ```
 
-**Expected Agent Response:**
-> "⚠️ **WINTER STORM WARNING** for Chicago (issued by the National Weather Service): A severe winter storm is expected from Friday 6 AM to Saturday 6 PM. Heavy snow with 8-12 inches of accumulation is forecast. If you must travel, keep emergency supplies in your vehicle including flashlight, food, and water. Stay safe and avoid unnecessary travel during the storm!"
+> There are no active weather alerts for Chicago, United States. The conditions are normal, and the National Weather Service has not issued any warnings or advisories for the area. It's a good idea to check the forecast again before heading out, but as of now, there are no weather-related concerns in Chicago."
 
 ---
 
-## 📋 **Example Query 6b: Weather Alert (International - Heuristic)**
+## 📋 **Example Query 5b: Weather Alert (International - Heuristic)**
 
 **User Query:**
 > "Any extreme weather in Dubai right now?"
 
-**Agent Tool Calls:**
-```
-1. get_weather_alert("Dubai")
-```
-
-**Tool Response (heuristic alert for non-US location):**
-```json
-{
-  "status": "success",
-  "message": "WEATHER ADVISORY for Dubai, United Arab Emirates: Extreme heat: currently 43.2°C",
+**Agent Response:**
+>
+> I am using the get_weather_alert tool to check if there are any extreme weather conditions in Dubai right now, as the user has asked about current weather and potential warnings or alerts.
+>
+> ```python
+> get_weather_alert("Dubai")
+> ```
+>
+> **Output:**
+>
+> ```json
+> {
+>   "status": "success",
+  "message": "WEATHER ADVISORY for Dubai, United Arab Emirates: Extreme heat: currently 35.4°C",
   "data": {
     "location": {
+      "latitude": 25.07725,
+      "longitude": 55.30927,
       "name": "Dubai",
       "country": "United Arab Emirates",
-      "latitude": 25.26,
-      "longitude": 55.31
+      "admin1": "Dubai"
     },
     "alert_status": "alerts_present",
-    "count": 1,
     "alerts": [
       {
         "type": "extreme_heat",
         "event": "Extreme Heat",
         "severity": "Moderate",
-        "message": "Extreme heat: currently 43.2°C"
+        "message": "Extreme heat: currently 35.4°C"
       }
     ],
+    "count": 1,
     "source": "Heuristic Analysis (non-US location)",
     "current_conditions": {
-      "temperature": 43.2,
-      "feels_like": 45.8,
-      "wind_speed": 11.4,
-      "humidity": 35,
-      "conditions": "Clear sky"
+      "temperature": 35.4,
+      "feels_like": 42.1,
+      "humidity": 61,
+      "wind_speed": 7.8,
+      "precipitation": 0,
+      "conditions": "Clear sky",
+      "weather_code": 0,
+      "timestamp": "2026-09-05T16:30"
     }
   }
 }
-```
+> ```
 
-**Expected Agent Response:**
-> "⚠️ **EXTREME HEAT ADVISORY** for Dubai: Current temperatures are at 43.2°C (110°F) with clear skies. This is dangerous heat! If you're outdoors, seek shade frequently, stay hydrated, and avoid strenuous activity during midday hours. Indoor air-conditioned spaces are strongly recommended."
+> Yes, there is an extreme weather alert in Dubai right now. The current temperature is 35.4°C, and it feels like 42.1°C due to the humidity. The weather advisory warns of extreme heat, with a moderate severity level. It's essential to take necessary precautions to stay safe in the heat, such as staying hydrated, seeking shade, and avoiding strenuous activities during the hottest part of the day."
 
 ---
 
-## 📋 **Example Query 7: Location Not Found**
+## 📋 **Example Query 6: Location Not Found**
 
 **User Query:**
 > "What's the weather in Atlantis?"
 
-**Agent Tool Calls:**
-```
-1. get_current_weather("Atlantis")
-```
+**Agent Response:**
+>
+> I am using the get_current_weather tool to check the weather conditions in Atlantis right now.
+>
+> ```python
+> get_current_weather("Atlantis")
+> ```
+>
+> **Output:**
+>
+> ```json
+> {
+>   "status": "error",
+>   "message": "Location 'Atlantis' not found. Please try a different city name or be more specific (e.g., 'Paris, France')."
+> }
+> ```
+>
+> I'm not aware of any real-world location called "Atlantis." Atlantis is a mythological place described in ancient Greek literature as a powerful and advanced civilization that existed in the distant past. It is not a recognized city or location that I can provide weather information for.
 
-**Tool Response:**
-```json
-{
-  "status": "error",
-  "message": "Location 'Atlantis' not found. Please try a different city name or be more specific (e.g., 'Paris, France')."
-}
-```
-
-**Expected Agent Response:**
-> "I couldn't find a location called 'Atlantis' in the weather database. Could you double-check the city name? If it's a smaller town, try including the state or country (e.g., 'Atlantis, Florida' or 'Atlantis, South Africa')."
+> If you're looking for weather information for a different location, please let me know the name of a real city or location, and I'll do my best to provide you with the current weather conditions."
 
 ---
 
-## 📋 **Example Query 8: Historical Weather Data**
+## 📋 **Example Query 7: Historical Weather Data**
 
 **User Query:**
-> "What was the weather like in Chicago on January 15, 2024?"
+> "What was the weather like in Sydney from 25 Dec 2025 to 2 Jan 2026?"
 
-**Agent Tool Calls:**
-```
-1. get_historical_weather("Chicago", "2024-01-15", "2024-01-15")
-```
-
-**Tool Response:**
-```json
-{
-  "status": "success",
-  "message": "Historical weather for Chicago, United States from 2024-01-15 to 2024-01-15",
+**Agent Response:**
+>
+> I am using the get_historical_weather tool to find the weather in Sydney from 25 Dec 2025 to 2 Jan 2026 because it is the most suitable tool for retrieving historical weather data for a specific location and date range.
+>
+> ```python
+> get_historical_weather("Sydney", "2025-12-25", "2026-01-02")
+> ```
+>
+> **Output:**
+>
+> ```json
+> {
+>   "status": "success",
+  "message": "Historical weather for Sydney, Australia from 2025-12-25 to 2026-01-02",
   "data": {
     "location": {
-      "name": "Chicago",
-      "country": "United States",
-      "latitude": 41.85,
-      "longitude": -87.65
+      "latitude": -33.86785,
+      "longitude": 151.20732,
+      "name": "Sydney",
+      "country": "Australia",
+      "admin1": "New South Wales"
     },
     "date_range": {
-      "start": "2024-01-15",
-      "end": "2024-01-15"
+      "start": "2025-12-25",
+      "end": "2026-01-02"
     },
-    "daily_data": [
+    "historical": [
       {
-        "date": "2024-01-15",
-        "temperature_high": 32.5,
-        "temperature_low": 20.3,
-        "temperature_mean": 26.4,
-        "precipitation_sum": 0.15,
-        "wind_speed_max": 18.6
+        "date": "2025-12-25",
+        "temp_high": 21.6,
+        "temp_low": 16.5,
+        "temp_mean": 19.5,
+        "precipitation_sum": 1.9,
+        "rain_sum": 1.9,
+        "snowfall_sum": 0,
+        "precipitation_hours": 10,
+        "wind_speed_max": 23.6,
+        "wind_gusts_max": 55.4,
+        "weathercode": 51,
+        "conditions": "Light drizzle"
+      },
+      {
+        "date": "2025-12-26",
+        "temp_high": 17.2,
+        "temp_low": 14.3,
+        "temp_mean": 15.9,
+        "precipitation_sum": 2.6,
+        "rain_sum": 2.6,
+        "snowfall_sum": 0,
+        "precipitation_hours": 8,
+        "wind_speed_max": 23.8,
+        "wind_gusts_max": 55.4,
+        "weathercode": 53,
+        "conditions": "Moderate drizzle"
+      },
+      {
+        "date": "2025-12-27",
+        "temp_high": 20.4,
+        "temp_low": 13.3,
+        "temp_mean": 17,
+        "precipitation_sum": 0.5,
+        "rain_sum": 0.5,
+        "snowfall_sum": 0,
+        "precipitation_hours": 4,
+        "wind_speed_max": 16.9,
+        "wind_gusts_max": 41.8,
+        "weathercode": 51,
+        "conditions": "Light drizzle"
+      },
+      {
+        "date": "2025-12-28",
+        "temp_high": 20.8,
+        "temp_low": 15.6,
+        "temp_mean": 18.2,
+        "precipitation_sum": 0.8,
+        "rain_sum": 0.8,
+        "snowfall_sum": 0,
+        "precipitation_hours": 5,
+        "wind_speed_max": 23.3,
+        "wind_gusts_max": 56.5,
+        "weathercode": 51,
+        "conditions": "Light drizzle"
+      },
+      {
+        "date": "2025-12-29",
+        "temp_high": 22,
+        "temp_low": 14.3,
+        "temp_mean": 18.3,
+        "precipitation_sum": 0,
+        "rain_sum": 0,
+        "snowfall_sum": 0,
+        "precipitation_hours": 0,
+        "wind_speed_max": 14.8,
+        "wind_gusts_max": 40.7,
+        "weathercode": 2,
+        "conditions": "Partly cloudy"
+      },
+      {
+        "date": "2025-12-30",
+        "temp_high": 22.7,
+        "temp_low": 13.8,
+        "temp_mean": 18.8,
+        "precipitation_sum": 0,
+        "rain_sum": 0,
+        "snowfall_sum": 0,
+        "precipitation_hours": 0,
+        "wind_speed_max": 14.7,
+        "wind_gusts_max": 40,
+        "weathercode": 3,
+        "conditions": "Overcast"
+      },
+      {
+        "date": "2025-12-31",
+        "temp_high": 23,
+        "temp_low": 15.1,
+        "temp_mean": 19.4,
+        "precipitation_sum": 0.4,
+        "rain_sum": 0.4,
+        "snowfall_sum": 0,
+        "precipitation_hours": 2,
+        "wind_speed_max": 15.5,
+        "wind_gusts_max": 38.9,
+        "weathercode": 51,
+        "conditions": "Light drizzle"
+      },
+      {
+        "date": "2026-01-01",
+        "temp_high": 19.6,
+        "temp_low": 18,
+        "temp_mean": 18.7,
+        "precipitation_sum": 3,
+        "rain_sum": 3,
+        "snowfall_sum": 0,
+        "precipitation_hours": 11,
+        "wind_speed_max": 21.7,
+        "wind_gusts_max": 49.7,
+        "weathercode": 53,
+        "conditions": "Moderate drizzle"
+      },
+      {
+        "date": "2026-01-02",
+        "temp_high": 21.8,
+        "temp_low": 17.1,
+        "temp_mean": 19.3,
+        "precipitation_sum": 0.5,
+        "rain_sum": 0.5,
+        "snowfall_sum": 0,
+        "precipitation_hours": 1,
+        "wind_speed_max": 12.3,
+        "wind_gusts_max": 33.1,
+        "weathercode": 53,
+        "conditions": "Moderate drizzle"
       }
-    ]
+    ],
+    "timezone": "Australia/Sydney"
   }
-}
-```
+> }
+> ```
+>
+> The weather in Sydney from December 25, 2025, to January 2, 2026, was mostly mild with some precipitation. Here's a breakdown of the weather for each day:
+> * December 25, 2025: Light drizzle with a high of 21.6°C and a low of 16.5°C
+> * December 26, 2025: Moderate drizzle with a high of 17.2°C and a low of 14.3°C
+> * December 27, 2025: Light drizzle with a high of 20.4°C and a low of 13.3°C
+> * December 28, 2025: Light drizzle with a high of 20.8°C and a low of 15.6°C
+> * December 29, 2025: Partly cloudy with a high of 22.0°C and a low of 14.3°C
+> * December 30, 2025: Overcast with a high of 22.7°C and a low of 13.8°C
+> * December 31, 2025: Light drizzle with a high of 23.0°C and a low of 15.1°C
+> * January 1, 2026: Moderate drizzle with a high of 19.6°C and a low of 18.0°C
+> * January 2, 2026: Moderate drizzle with a high of 21.8°C and a low of 17.1°C
 
-**Expected Agent Response:**
-> "On January 15, 2024, Chicago had a high of 32.5°F and a low of 20.3°F, with an average temperature of 26.4°F. There was light precipitation (0.15 inches) and maximum wind speeds reached 18.6 mph. It was a cold, blustery winter day!"
-
+> 
+> Overall, the weather was quite mild, with temperatures ranging from the mid-teens to the mid-20s (°C). There was some precipitation on most days, with the most significant amount falling on December 26 and January 1.
