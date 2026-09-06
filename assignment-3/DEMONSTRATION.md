@@ -380,35 +380,7 @@ This document shows example natural-language queries and how the agent should re
 
 ---
 
-## 📋 **Example Query 6: Location Not Found**
-
-**User Query:**
-> "What's the weather in Atlantis?"
-
-**Agent Response:**
->
-> I am using the get_current_weather tool to check the weather conditions in Atlantis right now.
->
-> ```python
-> get_current_weather("Atlantis")
-> ```
->
-> **Output:**
->
-> ```json
-> {
->   "status": "error",
->   "message": "Location 'Atlantis' not found. Please try a different city name or be more specific (e.g., 'Paris, France')."
-> }
-> ```
->
-> I'm not aware of any real-world location called "Atlantis." Atlantis is a mythological place described in ancient Greek literature as a powerful and advanced civilization that existed in the distant past. It is not a recognized city or location that I can provide weather information for.
-
-> If you're looking for weather information for a different location, please let me know the name of a real city or location, and I'll do my best to provide you with the current weather conditions."
-
----
-
-## 📋 **Example Query 7: Historical Weather Data**
+## 📋 **Example Query 6: Historical Weather Data**
 
 **User Query:**
 > "What was the weather like in Sydney from 25 Dec 2025 to 2 Jan 2026?"
