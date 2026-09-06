@@ -193,7 +193,7 @@ This document shows example natural-language queries and how the agent should re
 ## 📋 **Example Query 4: Multi-Day Forecast**
 
 **User Query:**
-> "Give me a 5-day forecast for Miami"
+> "Give me a 5-day forecast for Melbourne"
 
 **Agent Response:**
 >
