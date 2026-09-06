@@ -431,7 +431,7 @@ Follow [Connect agents to external MCPs and tools](https://docs.databricks.com/e
 
 ## 🤖 **Agent System Prompt**
 
-The agent system prompt is included in [AGENT_SYSTEM_PROMPT.md](#file-666605458033808). This prompt includes:
+The agent system prompt is included in [AGENT_SYSTEM_PROMPT.md](./AGENT_SYSTEM_PROMPT.md). This prompt includes:
 
 * Tool usage guidelines for all 5 MCP tools
 * Best practices for handling user queries
@@ -445,7 +445,7 @@ Refer to the file for the complete prompt in use when configuring the weather ag
 
 ## ✅ **Demonstration (Example Queries)**
 
-Demonstration examples with actual tool calls and agent responses are provided in [DEMONSTRATION.md](#file-666605458033807). This includes:
+Demonstration examples with actual tool calls and agent responses are provided in [DEMONSTRATION.md](./DEMONSTRATION.md). This includes:
 
 * Example queries for all 5 MCP tools
 * Tool call sequences and parameters
